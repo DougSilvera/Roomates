@@ -133,7 +133,7 @@ namespace Roommates.Repositories
                     room.Id = id;
                 }
             }
-
+            
             // when this method is finished we can look in the database and see the new room.
         }
     }

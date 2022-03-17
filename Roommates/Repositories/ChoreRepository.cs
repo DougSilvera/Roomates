@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Roommates.Models;
 using System.Collections.Generic;
+using System;
 
 namespace Roommates.Repositories
 {
@@ -62,6 +63,45 @@ namespace Roommates.Repositories
                     }
                 }
             }
+        }
+      public List<Chore> GetUnassignedChores()
+        {
+            using (SqlConnection conn=Connection)
+            {
+                conn.Open ();
+                using (SqlCommand cmd=conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Name FROM Chore LEFT JOIN RoommateChore on RoommateChore.ChoreId=Chore.Id WHERE RoommateChore.RoommateId is null";
+                    using (SqlDataReader reader=cmd.ExecuteReader())
+                    {
+                        List<Chore> chores = new List<Chore>();
+                        while (reader.Read())
+                        {
+                            Chore chore= new Chore
+                            {
+                           Name = reader.GetString(reader.GetOrdinal("Name")), 
+                            };
+                            chores.Add(chore);
+                        }
+                        return chores;
+                    }
+                }
+            }
+        }
+        public void AssignChore(int roomateId, int choreId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO RoommateChore (RoommateId, ChoreId) VALUES (@roommateId, @choreId)";
+                    cmd.Parameters.AddWithValue("@roommateId", roomateId);
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            Console.WriteLine("Chore Assigned!");
         }
     }
 

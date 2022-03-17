@@ -23,7 +23,7 @@ namespace Roommates.Repositories
                         Roommate roommate = null;
                         Room room = null;
 
-                        if (reader.Read())
+                        while (reader.Read())
                         {
                            
                             room = new Room
@@ -36,7 +36,7 @@ namespace Roommates.Repositories
                                 Id = id,
                                 FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                                 RentPortion = reader.GetInt32(reader.GetOrdinal("RentPortion")),
-                                RoomId = room
+                                Room = room
                                 
 
                             };
@@ -44,6 +44,34 @@ namespace Roommates.Repositories
                         return roommate ;
                     }
 
+                }
+            }
+        }
+        public List<Roommate> GetAll()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Id, FirstName, LastName FROM Roommate";
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Roommate> roommateList = new List<Roommate>();
+
+                        while (reader.Read())
+                        {
+                            Roommate roommate = new Roommate
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            };
+                            roommateList.Add(roommate);
+                        }
+                        return roommateList;
+                    }
                 }
             }
         }

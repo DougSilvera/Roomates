@@ -23,11 +23,40 @@ namespace Roommates
 
                 switch (selection)
                 {
+                    case ("Assign a chore to a roommate"):
+                        List<Chore> choreList = choreRepo.GetAll();
+                        foreach (Chore chore1 in choreList)
+                        {
+                            Console.WriteLine($"{chore1.Id}. {chore1.Name}");
+
+                        }
+                        Console.Write("Choose a chore to assign: ");
+                        int chosenChore = int.Parse(Console.ReadLine());
+                        List<Roommate> roommateList = roommateRepo.GetAll();
+                        foreach (Roommate roommate1 in roommateList)
+                        {
+                            Console.WriteLine($"{roommate1.Id}. {roommate1.FirstName} {roommate1.LastName}");
+                        }
+                        Console.Write("Assign that chore to a roommate: ");
+                        int chosenRoommate = int.Parse(Console.ReadLine());
+                        choreRepo.AssignChore(chosenRoommate, chosenChore);
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
                     case ("Show all rooms"):
                         List<Room> rooms = roomRepo.GetAll();
                         foreach (Room r in rooms)
                         {
                             Console.WriteLine($"{r.Name} has an Id of {r.Id} and a max occupancy of {r.MaxOccupancy}");
+                        }
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case ("Show all unassigned chores"):
+                        List<Chore> UnassignedChores = choreRepo.GetUnassignedChores();
+                        foreach (Chore UnassignedChore in UnassignedChores)
+                        {
+                            Console.WriteLine($"{UnassignedChore.Name} is not being done by any roomates");
                         }
                         Console.Write("Press any key to continue");
                         Console.ReadKey();
@@ -108,6 +137,8 @@ namespace Roommates
                 "Add a room",
                 "Show all Chores",
                 "Search for chore",
+                "Show all unassigned chores",
+                "Assign a chore to a roommate",
                 "Search for roommate",
                 "Exit"
             };
